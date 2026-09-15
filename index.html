@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 22 – Ghost Stealth Relay</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+body {
+  background: radial-gradient(circle at top, #222 0, #000 60%, #000 100%);
+  color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame {
+  width: 100%;
+  max-width: 960px;
+  padding: 32px 20px;
+}
+
+.card {
+  background: #050505;
+  border-radius: 18px;
+  border: 1px solid #262626;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
+  padding: 28px 26px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(130, 130, 130, 0.35), transparent 60%);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.card-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 2fr);
+  gap: 26px;
+}
+
+@media (max-width: 768px) {
+  .card-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.logo-circle {
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 20% 20%, #ffffff 0, #c0c0c0 35%, #5b5b5b 65%, #111 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 10px 28px rgba(0, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-circle::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: inherit;
+  background: conic-gradient(from 220deg, #f5f5f5, #c7c7c7, #777, #d9d9d9, #444, #f5f5f5);
+  mix-blend-mode: screen;
+  opacity: 0.26;
+}
+
+.logo-circle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.35), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  display: block;
+}
+
+.title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #b0b0b0;
+}
+
+h1 {
+  font-size: 24px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f7f7f7;
+}
+
+.subtitle {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #a6a6a6;
+  max-width: 360px;
+}
+
+.divider {
+  margin: 20px 0 16px;
+  border: none;
+  border-top: 1px solid #222;
+}
+
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.pin-grid {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+.pin-box {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #303030;
+  background: radial-gradient(circle at 10% 0, #333, #040404 65%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  color: #f5f5f5;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.pin-hint {
+  font-size: 11px;
+  color: #757575;
+}
+
+.admin-panel {
+  margin-top: 4px;
+  padding: 12px 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #272727;
+  background: radial-gradient(circle at top left, rgba(120, 120, 120, 0.25), transparent 55%),
+              radial-gradient(circle at bottom right, #020202, #000);
+}
+
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-row input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 10px;
+  border: 1px solid #3a3a3a;
+  padding: 8px 10px;
+  color: #eaeaea;
+  font-size: 13px;
+  outline: none;
+}
+
+.admin-row input::placeholder {
+  color: #666;
+}
+
+.btn-admin {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #7cffc4;
+  background: linear-gradient(135deg, #1b4737, #0a1914);
+  color: #dbffe9;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-status {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #999;
+  min-height: 14px;
+}
+
+.admin-status.ok {
+  color: #8dffc8;
+}
+
+.admin-status.err {
+  color: #ff7b7b;
+}
+
+.meta {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #666;
+}
+
+.meta span {
+  color: #cfcfcf;
+}
+
+.right-col {
+  border-left: 1px solid #191919;
+  padding-left: 22px;
+}
+
+@media (max-width: 768px) {
+  .right-col {
+    border-left: none;
+    border-top: 1px solid #191919;
+    padding-left: 0;
+    padding-top: 18px;
+    margin-top: 8px;
+  }
+}
+
+.relay-label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.relay-window {
+  border-radius: 14px;
+  border: 1px solid #262626;
+  background: radial-gradient(circle at top, #181818, #050505 70%);
+  padding: 12px 12px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.relay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: #a0a0a0;
+}
+
+.relay-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #47ffb2, #018f5b);
+  box-shadow: 0 0 10px rgba(114, 255, 195, 0.85);
+}
+
+.relay-body {
+  font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+  color: #c7f7e3;
+  max-height: 210px;
+  overflow: hidden;
+  position: relative;
+}
+
+.relay-line {
+  opacity: 0.85;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.relay-line.muted {
+  color: #595959;
+}
+
+.relay-footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #6a6a6a;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #333;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <div class="card-inner">
+        <div>
+          <div class="logo-wrap">
+            <div class="logo-circle">
+              <img
+                class="logo"
+                alt="Chrome Silver Project 22 Logo"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEnElEQVR4Xu2bW4hVVRTHf3fOzuzs7OzszGyDQIhCqUqCqEIoFqkIolAqKhQFBRX8oEL9oSgqFQUIUqQ2CBi0CEgqAoEJpQgkGsoiBBr2y3Znd2Z3dnZ2dnZmd2Z3dnZ3bv3HvO7Mw+7szuzuzuzuzO+c75zzn3nHvP+c7vOc8+5xwzF4jwDfgX8BvwL/AX8H9kZbX6I+DpB2gGOBf4F7gK2A9cCNwGzgc2AxcAf4A3gX2BXYENgD7gPuA/4M9kCTtGv5N8G9wJPAfMBvYHdgJXAJeBvYFdgW2ALeB04DdgW1p6Jf8G3gfeBXYAJwGngbeB3YFdgQ2Aa8A3gduC3YFtgS2Ab8C3gV2BXYGNgt2Ab8BfgX2BDYENgY2BXYGNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2DJj+KX8LPCH8DvAP8AvwH/BPwK/CfwF/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwl8Df4Y2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4AfwD/BPwL/Aj8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf8l/AT6GNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4G/gv8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf8lfwH8GNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4H/gv8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Ce4H/gH8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Ce4D/gH8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf4H+A3YENgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BXYENgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNgP/BwGfVqf07qjHAAAAAElFTkSuQmCC" />
+            </div>
+            <div class="title-wrap">
+              <div class="badge">Ghost Stealth Relay</div>
+              <h1>Project 22</h1>
+              <p class="subtitle">Secure entry relay with hard‑coded access channel and admin control for field ops.</p>
+            </div>
+          </div>
+
+      <hr class="divider" />
+
+      <div class="section-label">Access channel</div>
+      <div class="pin-grid" id="pin-display">
+        <div class="pin-box">8</div>
+        <div class="pin-box">2</div>
+        <div class="pin-box">3</div>
+        <div class="pin-box">6</div>
+      </div>
+      <div class="pin-hint">Fixed relay PIN: 8 2 3 6</div>
+
+      <div class="section-label" style="margin-top: 18px;">Admin console</div>
+      <div class="admin-panel">
+        <div class="admin-row">
+          <input
+            id="admin-password"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Admin key required" />
+          <button class="btn-admin" id="admin-btn">Unlock</button>
+        </div>
+        <div class="admin-status" id="admin-status"></div>
+        <div class="meta">
+          Admin credential: <span>Rustybucket22</span> (case sensitive)
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="relay-label">Live relay feed</div>
+      <div class="relay-window">
+        <div class="relay-header">
+          <span>Ghost Node • P22‑Relay</span>
+          <div class="relay-pulse"></div>
+        </div>
+        <div class="relay-body" id="relay-body">
+          <div class="relay-line muted">[boot] initializing ghost stealth relay…</div>
+          <div class="relay-line muted">[link] awaiting channel handshake…</div>
+          <div class="relay-line">[pin] required: 8 2 3 6</div>
+          <div class="relay-line">[admin] key hash registered</div>
+          <div class="relay-line muted">[status] console locked</div>
+        </div>
+        <div class="relay-footer">
+          <span>Channel integrity: OK</span>
+          <span class="tag">P22 • GSR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+  <script>
+    const ADMIN_PASSWORD = "Rustybucket22";
+
+    const adminInput = document.getElementById("admin-password");
+    const adminBtn = document.getElementById("admin-btn");
+    const adminStatus = document.getElementById("admin-status");
+    const relayBody = document.getElementById("relay-body");
+
+    function appendRelayLine(text, muted) {
+      const line = document.createElement("div");
+      line.className = "relay-line" + (muted ? " muted" : "");
+      line.textContent = text;
+      relayBody.appendChild(line);
+      relayBody.scrollTop = relayBody.scrollHeight;
+    }
+
+    function handleAdminAttempt() {
+      const value = adminInput.value.trim();
+      if (!value) {
+        adminStatus.textContent = "Enter admin key to request console access.";
+        adminStatus.className = "admin-status";
+        return;
+      }
+
+      if (value === ADMIN_PASSWORD) {
+        adminStatus.textContent = "Admin console unlocked. Stealth controls are now live.";
+        adminStatus.className = "admin-status ok";
+        appendRelayLine("[admin] key accepted • console status: UNLOCKED", false);
+        appendRelayLine("[ghost] relay profile: Project 22 / Ghost Stealth Relay", false);
+      } else {
+        adminStatus.textContent = "Invalid key. Relay console remains locked.";
+        adminStatus.className = "admin-status err";
+        appendRelayLine("[admin] invalid key presented • access denied", true);
+      }
+    }
+
+    adminBtn.addEventListener("click", handleAdminAttempt);
+    adminInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleAdminAttempt();
+      }
+    });
+  </script>
+</body>
+</html>
