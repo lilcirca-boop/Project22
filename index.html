@@ -4,451 +4,1971 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project 22 – Ghost Stealth Relay</title>
+  <title>Project Twenty Two – Ghost Stealth Relay</title>
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    :root {
+      --bg: #02030a;
+      --bg-alt: #050819;
+      --accent: #29ffc6;
+      --accent-soft: rgba(41, 255, 198, 0.18);
+      --danger: #ff3366;
+      --text-main: #f5f7ff;
+      --text-muted: #8b90aa;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.85);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --blur-strong: 26px;
+      --glow-accent: 0 0 22px rgba(41, 255, 198, 0.65);
+      --transition-fast: 160ms ease-out;
     }
 
-body {
-  background: radial-gradient(circle at top, #222 0, #000 60%, #000 100%);
-  color: #f5f5f5;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-.frame {
-  width: 100%;
-  max-width: 960px;
-  padding: 32px 20px;
-}
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #0b1024 0, #02030a 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
 
-.card {
-  background: #050505;
-  border-radius: 18px;
-  border: 1px solid #262626;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
-  padding: 28px 26px 30px;
-  position: relative;
-  overflow: hidden;
-}
+    .ghost-shell {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      padding: 1px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(41, 255, 198, 0.35), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(88, 101, 242, 0.28), transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(20, 26, 59, 0.6));
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 30px 120px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+    }
 
-.card::before {
-  content: "";
-  position: absolute;
-  inset: -40%;
-  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 55%),
-              radial-gradient(circle at bottom right, rgba(130, 130, 130, 0.35), transparent 60%);
-  opacity: 0.09;
-  pointer-events: none;
-}
+    .ghost-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(41, 255, 198, 0.16), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(88, 101, 242, 0.16), transparent 55%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.06), transparent 40%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
 
-.card-inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 2.2fr) minmax(0, 2fr);
-  gap: 26px;
-}
+    .ghost-core {
+      position: relative;
+      z-index: 1;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top, rgba(8, 15, 40, 0.9) 0, rgba(4, 7, 20, 0.98) 55%, #02030a 100%);
+      backdrop-filter: blur(var(--blur-strong));
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-@media (max-width: 768px) {
-  .card-inner {
-    grid-template-columns: 1fr;
-  }
-}
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-.logo-wrap {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 18px;
-}
+    .id-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-.logo-circle {
-  width: 82px;
-  height: 82px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 20% 20%, #ffffff 0, #c0c0c0 35%, #5b5b5b 65%, #111 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 10px 28px rgba(0, 0, 0, 0.8);
-  position: relative;
-  overflow: hidden;
-}
+    .id-label {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
 
-.logo-circle::before {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: inherit;
-  background: conic-gradient(from 220deg, #f5f5f5, #c7c7c7, #777, #d9d9d9, #444, #f5f5f5);
-  mix-blend-mode: screen;
-  opacity: 0.26;
-}
+    .id-main {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
 
-.logo-circle::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.35), transparent 45%);
-  mix-blend-mode: screen;
-}
+    .status-pill {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.24), transparent 60%),
+                  rgba(7, 255, 185, 0.08);
+      border: 1px solid rgba(41, 255, 198, 0.35);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(41, 255, 198, 0.38);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
 
-.logo {
-  position: relative;
-  z-index: 1;
-  width: 68px;
-  height: 68px;
-  border-radius: 999px;
-  display: block;
-}
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: var(--glow-accent);
+    }
 
-.title-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+    .status-pill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0, rgba(255, 255, 255, 0.4) 20%, transparent 40%);
+      mix-blend-mode: screen;
+      transform: translateX(-120%);
+      animation: sheen 5s linear infinite;
+      opacity: 0.7;
+    }
 
-.badge {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #b0b0b0;
-}
+    @keyframes sheen {
+      0% { transform: translateX(-120%); }
+      18% { transform: translateX(120%); }
+      100% { transform: translateX(120%); }
+    }
 
-h1 {
-  font-size: 24px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #f7f7f7;
-}
+    .divider-soft {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.06),
+        transparent
+      );
+      opacity: 0.9;
+    }
 
-.subtitle {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #a6a6a6;
-  max-width: 360px;
-}
+    .ghost-heading {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
-.divider {
-  margin: 20px 0 16px;
-  border: none;
-  border-top: 1px solid #222;
-}
+    .ghost-title {
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-main);
+    }
 
-.section-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: #777;
-  margin-bottom: 8px;
-}
+    .ghost-subtitle {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--text-muted);
+    }
 
-.pin-grid {
-  display: flex;
-  gap: 10px;
-  margin-top: 6px;
-  margin-bottom: 18px;
-}
+    .pin-panel {
+      margin-top: 4px;
+      padding: 14px 12px 16px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(88, 101, 242, 0.18), transparent 60%),
+        linear-gradient(to bottom, rgba(8, 14, 40, 0.96), rgba(3, 5, 18, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow:
+        0 18px 55px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-.pin-box {
-  flex: 1;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid #303030;
-  background: radial-gradient(circle at 10% 0, #333, #040404 65%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  letter-spacing: 0.18em;
-  color: #f5f5f5;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-}
+    .pin-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
 
-.pin-hint {
-  font-size: 11px;
-  color: #757575;
-}
+    .pin-label-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-.admin-panel {
-  margin-top: 4px;
-  padding: 12px 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #272727;
-  background: radial-gradient(circle at top left, rgba(120, 120, 120, 0.25), transparent 55%),
-              radial-gradient(circle at bottom right, #020202, #000);
-}
+    .pin-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
 
-.admin-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .pin-mode {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
 
-.admin-row input {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.65);
-  border-radius: 10px;
-  border: 1px solid #3a3a3a;
-  padding: 8px 10px;
-  color: #eaeaea;
-  font-size: 13px;
-  outline: none;
-}
+    .pin-help-tag {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.08), transparent 60%);
+      color: var(--text-muted);
+    }
 
-.admin-row input::placeholder {
-  color: #666;
-}
+    .pin-indicators {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between;
+    }
 
-.btn-admin {
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid #7cffc4;
-  background: linear-gradient(135deg, #1b4737, #0a1914);
-  color: #dbffe9;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  white-space: nowrap;
-}
+    .pin-dots {
+      display: flex;
+      gap: 10px;
+    }
 
-.admin-status {
-  margin-top: 8px;
-  font-size: 11px;
-  color: #999;
-  min-height: 14px;
-}
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.18), transparent 65%),
+                  rgba(6, 10, 30, 0.96);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
 
-.admin-status.ok {
-  color: #8dffc8;
-}
+    .pin-dot.filled::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 25%, #fff, #29ffc6);
+      box-shadow: 0 0 14px rgba(41, 255, 198, 0.7);
+    }
 
-.admin-status.err {
-  color: #ff7b7b;
-}
+    .pin-status-text {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: right;
+    }
 
-.meta {
-  margin-top: 14px;
-  font-size: 11px;
-  color: #666;
-}
+    .pin-status-text.error {
+      color: var(--danger);
+    }
 
-.meta span {
-  color: #cfcfcf;
-}
+    .pin-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
 
-.right-col {
-  border-left: 1px solid #191919;
-  padding-left: 22px;
-}
+    .pin-input-shell {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.12), transparent 65%),
+        linear-gradient(to right, rgba(5, 9, 26, 0.96), rgba(5, 10, 30, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 6px 18px rgba(0, 0, 0, 0.8);
+    }
 
-@media (max-width: 768px) {
-  .right-col {
-    border-left: none;
-    border-top: 1px solid #191919;
-    padding-left: 0;
-    padding-top: 18px;
-    margin-top: 8px;
-  }
-}
+    .pin-input-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(41, 255, 198, 0.3), transparent 35%, transparent 65%, rgba(88, 101, 242, 0.35));
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
 
-.relay-label {
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #777;
-  margin-bottom: 10px;
-}
+    .pin-input-field {
+      position: relative;
+      width: 100%;
+      padding: 8px 40px 8px 14px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-main);
+      letter-spacing: 0.3em;
+      font-size: 14px;
+      font-weight: 500;
+      caret-color: var(--accent);
+    }
 
-.relay-window {
-  border-radius: 14px;
-  border: 1px solid #262626;
-  background: radial-gradient(circle at top, #181818, #050505 70%);
-  padding: 12px 12px 10px;
-  position: relative;
-  overflow: hidden;
-}
+    .pin-input-field::placeholder {
+      color: rgba(139, 144, 170, 0.55);
+    }
 
-.relay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  font-size: 11px;
-  color: #a0a0a0;
-}
+    .pin-eye-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(circle at 30% 20%, #fff, rgba(255, 255, 255, 0.3));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 14px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
 
-.relay-pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #47ffb2, #018f5b);
-  box-shadow: 0 0 10px rgba(114, 255, 195, 0.85);
-}
+    .pin-eye-toggle span {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      background: radial-gradient(circle at 30% 20%, #000, #333);
+    }
 
-.relay-body {
-  font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 11px;
-  color: #c7f7e3;
-  max-height: 210px;
-  overflow: hidden;
-  position: relative;
-}
+    .pin-cta {
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(41, 255, 198, 0.5);
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.35), transparent 60%),
+        linear-gradient(to right, rgba(7, 255, 185, 0.25), rgba(7, 162, 255, 0.15));
+      color: var(--text-main);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.85),
+        0 0 18px rgba(41, 255, 198, 0.55);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+    }
 
-.relay-line {
-  opacity: 0.85;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+    .pin-cta:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.85),
+        0 0 26px rgba(41, 255, 198, 0.7);
+    }
 
-.relay-line.muted {
-  color: #595959;
-}
+    .pin-cta:active {
+      transform: translateY(0);
+      filter: brightness(0.98);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 12px rgba(41, 255, 198, 0.5);
+    }
 
-.relay-footer {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 10px;
-  color: #6a6a6a;
-}
-
-.tag {
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid #333;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-
+    .pin-cta span.icon {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #29ffc6);
+      box-shadow: 0 0 12px rgba(41, 255, 198, 0.8);
+    }
   </style>
 </head>
 <body>
-  <div class="frame">
-    <div class="card">
-      <div class="card-inner">
-        <div>
-          <div class="logo-wrap">
-            <div class="logo-circle">
-              <img
-                class="logo"
-                alt="Chrome Silver Project 22 Logo"
-                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEnElEQVR4Xu2bW4hVVRTHf3fOzuzs7OzszGyDQIhCqUqCqEIoFqkIolAqKhQFBRX8oEL9oSgqFQUIUqQ2CBi0CEgqAoEJpQgkGsoiBBr2y3Znd2Z3dnZ2dnZmd2Z3dnZ3bv3HvO7Mw+7szuzuzuzuzO+c75zzn3nHvP+c7vOc8+5xwzF4jwDfgX8BvwL/AX8H9kZbX6I+DpB2gGOBf4F7gK2A9cCNwGzgc2AxcAf4A3gX2BXYENgD7gPuA/4M9kCTtGv5N8G9wJPAfMBvYHdgJXAJeBvYFdgW2ALeB04DdgW1p6Jf8G3gfeBXYAJwGngbeB3YFdgQ2Aa8A3gduC3YFtgS2Ab8C3gV2BXYGNgt2Ab8BfgX2BDYENgY2BXYGNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2DJj+KX8LPCH8DvAP8AvwH/BPwK/CfwF/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwl8Df4Y2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4AfwD/BPwL/Aj8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf8l/AT6GNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4G/gv8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf8lfwH8GNgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BX4H/gv8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Ce4H/gH8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Ce4D/gH8B/wT8C/wI/An8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cfwn8Cf4H+A3YENgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNge2BXYENgQ2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYENgY2BDYGNgP/BwGfVqf07qjHAAAAAElFTkSuQmCC" />
+  <div class="ghost-shell">
+    <div class="ghost-core">
+      <div class="top-bar">
+        <div class="id-block">
+          <div class="id-label">Project Protocol</div>
+          <div class="id-main">Twenty Two // Ghost Stealth Relay</div>
+        </div>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>Ghost Mode: Armed</span>
+        </div>
+      </div>
+
+      <div class="divider-soft"></div>
+
+      <div class="ghost-heading">
+        <div class="ghost-title">Ghost Mode Access</div>
+        <div class="ghost-subtitle">Level Three . Shadow Circuit Authentication</div>
+      </div>
+
+      <div class="pin-panel">
+        <div class="pin-header-row">
+          <div class="pin-label-block">
+            <div class="pin-label">Access Gate</div>
+            <div class="pin-mode">Four Digit Shadow Pin</div>
+          </div>
+          <div class="pin-help-tag">Stealth Relay 22.G</div>
+        </div>
+
+        <div class="pin-indicators">
+          <div class="pin-dots">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+          </div>
+          <div class="pin-status-text" id="pin-status-text">Awaiting input</div>
+        </div>
+
+        <div class="pin-input-row">
+          <div class="pin-input-shell">
+            <input
+              id="ghost-pin-input"
+              class="pin-input-field"
+              type="password"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="4"
+              autocomplete="off"
+              placeholder="••••"
+            />
+            <button type="button" class="pin-eye-toggle" id="pin-eye-toggle">
+              <span></span>
+            </button>
+          </div>
+          <button type="button" class="pin-cta" id="pin-verify-btn">
+            <span class="icon"></span>
+            <span>Verify</span>
+          </button>
+        </div>
+      </div>
+      <!-- Part 2 (logic, additional panels, and animations) continues below -->
+
+    </div>
+  </div>
+</body>
+</html>
+      <!-- Part 2 – Ghost Dashboard + Core Logic -->
+
+      <!-- Ghost Dashboard (hidden until PIN success) -->
+      <div class="ghost-dashboard" id="ghost-dashboard" style="display:none;">
+        <div class="dashboard-header">
+          <div class="dash-title-block">
+            <div class="dash-label">Ghost Control Surface</div>
+            <div class="dash-title">Stealth Relay Ops Console</div>
+          </div>
+          <div class="dash-meta-chip">
+            <span class="meta-key">Node</span>
+            <span class="meta-val">22.G-Shadow</span>
+          </div>
+        </div>
+
+        <div class="divider-soft"></div>
+
+        <!-- Performance + Health Row -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-label">Ghost Throughput</div>
+            <div class="metric-main">
+              <span class="metric-value" id="metric-throughput">0.82</span>
+              <span class="metric-unit">relays/s</span>
             </div>
-            <div class="title-wrap">
-              <div class="badge">Ghost Stealth Relay</div>
-              <h1>Project 22</h1>
-              <p class="subtitle">Secure entry relay with hard‑coded access channel and admin control for field ops.</p>
+            <div class="metric-bar">
+              <div class="metric-fill" id="throughput-fill" style="width:72%;"></div>
             </div>
+            <div class="metric-foot">Shadow stream stable</div>
           </div>
 
-      <hr class="divider" />
+          <div class="metric-card">
+            <div class="metric-label">Signal Obfuscation</div>
+            <div class="metric-main">
+              <span class="metric-value" id="metric-obfuscation">96.4</span>
+              <span class="metric-unit">%</span>
+            </div>
+            <div class="metric-bar alt">
+              <div class="metric-fill" id="obfuscation-fill" style="width:96%;"></div>
+            </div>
+            <div class="metric-foot">Scramble layer: triple phase</div>
+          </div>
+        </div>
 
-      <div class="section-label">Access channel</div>
-      <div class="pin-grid" id="pin-display">
-        <div class="pin-box">8</div>
-        <div class="pin-box">2</div>
-        <div class="pin-box">3</div>
-        <div class="pin-box">6</div>
-      </div>
-      <div class="pin-hint">Fixed relay PIN: 8 2 3 6</div>
+        <!-- Ghost Channels / Status -->
+        <div class="channels-panel">
+          <div class="channels-header">
+            <div class="channels-title">Ghost Channels</div>
+            <div class="channels-sub">Shadow links and relay vectors</div>
+          </div>
 
-      <div class="section-label" style="margin-top: 18px;">Admin console</div>
-      <div class="admin-panel">
-        <div class="admin-row">
-          <input
-            id="admin-password"
-            type="password"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="Admin key required" />
-          <button class="btn-admin" id="admin-btn">Unlock</button>
+          <div class="channels-list">
+            <div class="channel-row">
+              <div class="channel-id">G-Alpha</div>
+              <div class="channel-meta">Primary stealth uplink</div>
+              <div class="channel-status online">Online</div>
+            </div>
+            <div class="channel-row">
+              <div class="channel-id">G-Beta</div>
+              <div class="channel-meta">Cross-domain echo</div>
+              <div class="channel-status adaptive">Adaptive</div>
+            </div>
+            <div class="channel-row">
+              <div class="channel-id">G-Gamma</div>
+              <div class="channel-meta">Deep ghost tunnel</div>
+              <div class="channel-status standby">Standby</div>
+            </div>
+          </div>
         </div>
-        <div class="admin-status" id="admin-status"></div>
-        <div class="meta">
-          Admin credential: <span>Rustybucket22</span> (case sensitive)
-        </div>
-      </div>
-    </div>
 
-    <div class="right-col">
-      <div class="relay-label">Live relay feed</div>
-      <div class="relay-window">
-        <div class="relay-header">
-          <span>Ghost Node • P22‑Relay</span>
-          <div class="relay-pulse"></div>
+        <!-- Control Strip -->
+        <div class="control-strip">
+          <button type="button" class="control-pill" id="pulse-scramble-btn">
+            <span class="pill-indicator"></span>
+            <span>Pulse Scramble</span>
+          </button>
+          <button type="button" class="control-pill soft" id="cloak-toggle-btn">
+            <span class="pill-indicator alt"></span>
+            <span>Cloak Envelope</span>
+          </button>
+          <button type="button" class="control-pill ghost" id="ghost-disarm-btn">
+            <span class="pill-indicator danger"></span>
+            <span>Disarm Ghost</span>
+          </button>
         </div>
-        <div class="relay-body" id="relay-body">
-          <div class="relay-line muted">[boot] initializing ghost stealth relay…</div>
-          <div class="relay-line muted">[link] awaiting channel handshake…</div>
-          <div class="relay-line">[pin] required: 8 2 3 6</div>
-          <div class="relay-line">[admin] key hash registered</div>
-          <div class="relay-line muted">[status] console locked</div>
-        </div>
-        <div class="relay-footer">
-          <span>Channel integrity: OK</span>
-          <span class="tag">P22 • GSR</span>
+
+        <!-- Activity Feed -->
+        <div class="activity-panel">
+          <div class="activity-header">
+            <div class="activity-title">Shadow Activity</div>
+            <div class="activity-sub">Latest relay handshakes</div>
+          </div>
+          <div class="activity-feed" id="activity-feed">
+            <div class="activity-row">
+              <div class="activity-tag">22.G-Handshake</div>
+              <div class="activity-meta">Ghost spine synchronized</div>
+              <div class="activity-time">T-00:12</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-tag">Ghost-Pulse</div>
+              <div class="activity-meta">Stealth carrier re-phased</div>
+              <div class="activity-time">T-00:29</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-  </div>
   <script>
-    const ADMIN_PASSWORD = "Rustybucket22";
+    // --- Core Ghost Mode Logic ---
+    const CORRECT_PIN = "2207"; // change this to whatever you want
 
-    const adminInput = document.getElementById("admin-password");
-    const adminBtn = document.getElementById("admin-btn");
-    const adminStatus = document.getElementById("admin-status");
-    const relayBody = document.getElementById("relay-body");
+    const pinInput = document.getElementById("ghost-pin-input");
+    const pinDots = document.querySelectorAll(".pin-dot");
+    const pinStatusText = document.getElementById("pin-status-text");
+    const pinVerifyBtn = document.getElementById("pin-verify-btn");
+    const pinEyeToggle = document.getElementById("pin-eye-toggle");
+    const ghostDashboard = document.getElementById("ghost-dashboard");
 
-    function appendRelayLine(text, muted) {
-      const line = document.createElement("div");
-      line.className = "relay-line" + (muted ? " muted" : "");
-      line.textContent = text;
-      relayBody.appendChild(line);
-      relayBody.scrollTop = relayBody.scrollHeight;
+    const pulseScrambleBtn = document.getElementById("pulse-scramble-btn");
+    const cloakToggleBtn = document.getElementById("cloak-toggle-btn");
+    const ghostDisarmBtn = document.getElementById("ghost-disarm-btn");
+    const activityFeed = document.getElementById("activity-feed");
+    const statusPill = document.querySelector(".status-pill span:last-child");
+
+    let cloakEngaged = true;
+
+    function updateDots(value) {
+      const length = value.length;
+      pinDots.forEach((dot, index) => {
+        if (index < length) {
+          dot.classList.add("filled");
+        } else {
+          dot.classList.remove("filled");
+        }
+      });
     }
 
-    function handleAdminAttempt() {
-      const value = adminInput.value.trim();
-      if (!value) {
-        adminStatus.textContent = "Enter admin key to request console access.";
-        adminStatus.className = "admin-status";
+    function setStatus(message, isError = false) {
+      pinStatusText.textContent = message;
+      if (isError) {
+        pinStatusText.classList.add("error");
+      } else {
+        pinStatusText.classList.remove("error");
+      }
+    }
+
+    function shakePinPanel() {
+      const panel = document.querySelector(".pin-panel");
+      if (!panel) return;
+      panel.classList.remove("shake");
+      // force reflow
+      void panel.offsetWidth;
+      panel.classList.add("shake");
+      setTimeout(() => panel.classList.remove("shake"), 320);
+    }
+
+    function revealDashboard() {
+      ghostDashboard.style.display = "block";
+      ghostDashboard.classList.add("ghost-dashboard-visible");
+      if (statusPill) {
+        statusPill.textContent = "Ghost Mode: Live";
+      }
+    }
+
+    function concealDashboard() {
+      ghostDashboard.classList.remove("ghost-dashboard-visible");
+      setTimeout(() => {
+        ghostDashboard.style.display = "none";
+      }, 220);
+      if (statusPill) {
+        statusPill.textContent = "Ghost Mode: Armed";
+      }
+    }
+
+    function handlePinCheck() {
+      const value = pinInput.value.trim();
+
+      if (value.length < 4) {
+        setStatus("Need full shadow pin", true);
+        shakePinPanel();
         return;
       }
 
-      if (value === ADMIN_PASSWORD) {
-        adminStatus.textContent = "Admin console unlocked. Stealth controls are now live.";
-        adminStatus.className = "admin-status ok";
-        appendRelayLine("[admin] key accepted • console status: UNLOCKED", false);
-        appendRelayLine("[ghost] relay profile: Project 22 / Ghost Stealth Relay", false);
+      if (value === CORRECT_PIN) {
+        setStatus("Access granted. Opening ghost surface", false);
+        pinInput.blur();
+        setTimeout(() => {
+          revealDashboard();
+        }, 260);
       } else {
-        adminStatus.textContent = "Invalid key. Relay console remains locked.";
-        adminStatus.className = "admin-status err";
-        appendRelayLine("[admin] invalid key presented • access denied", true);
+        setStatus("Invalid shadow pattern", true);
+        shakePinPanel();
+        pinInput.value = "";
+        updateDots("");
       }
     }
 
-    adminBtn.addEventListener("click", handleAdminAttempt);
-    adminInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleAdminAttempt();
+    pinInput.addEventListener("input", (e) => {
+      const numeric = e.target.value.replace(/\D/g, "").slice(0, 4);
+      if (numeric !== e.target.value) {
+        e.target.value = numeric;
       }
+      updateDots(numeric);
+      setStatus("Awaiting input", false);
+    });
+
+    pinInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handlePinCheck();
+      }
+    });
+
+    pinVerifyBtn.addEventListener("click", handlePinCheck);
+
+    pinEyeToggle.addEventListener("click", () => {
+      const isPassword = pinInput.type === "password";
+      pinInput.type = isPassword ? "text" : "password";
+    });
+
+    function pushActivity(tag, meta) {
+      const row = document.createElement("div");
+      row.className = "activity-row";
+
+      const tagEl = document.createElement("div");
+      tagEl.className = "activity-tag";
+      tagEl.textContent = tag;
+
+      const metaEl = document.createElement("div");
+      metaEl.className = "activity-meta";
+      metaEl.textContent = meta;
+
+      const timeEl = document.createElement("div");
+      timeEl.className = "activity-time";
+      timeEl.textContent = "T-00:00";
+
+      row.appendChild(tagEl);
+      row.appendChild(metaEl);
+      row.appendChild(timeEl);
+
+      activityFeed.prepend(row);
+    }
+
+    pulseScrambleBtn.addEventListener("click", () => {
+      pushActivity("Ghost-Pulse", "Scramble sequence fired");
+    });
+
+    cloakToggleBtn.addEventListener("click", () => {
+      cloakEngaged = !cloakEngaged;
+      cloakToggleBtn.classList.toggle("active", cloakEngaged);
+      pushActivity(
+        "Cloak-Envelope",
+        cloakEngaged ? "Cloak envelope engaged" : "Cloak envelope relaxed"
+      );
+    });
+
+    ghostDisarmBtn.addEventListener("click", () => {
+      pushActivity("Ghost-Disarm", "Ghost mode returned to armed idle");
+      concealDashboard();
+      pinInput.value = "";
+      updateDots("");
+      setStatus("Awaiting input", false);
+    });
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Twenty Two – Ghost Stealth Relay</title>
+
+  <style>
+    :root {
+      --bg: #02030a;
+      --bg-alt: #050819;
+      --accent: #29ffc6;
+      --accent-soft: rgba(41, 255, 198, 0.18);
+      --danger: #ff3366;
+      --text-main: #f5f7ff;
+      --text-muted: #8b90aa;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.85);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --blur-strong: 26px;
+      --glow-accent: 0 0 22px rgba(41, 255, 198, 0.65);
+      --transition-fast: 160ms ease-out;
+      --transition-med: 220ms ease-out;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #0b1024 0, #02030a 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .ghost-shell {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      padding: 1px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(41, 255, 198, 0.35), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(88, 101, 242, 0.28), transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(20, 26, 59, 0.6));
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 30px 120px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+    }
+
+    .ghost-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(41, 255, 198, 0.16), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(88, 101, 242, 0.16), transparent 55%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.06), transparent 40%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .ghost-core {
+      position: relative;
+      z-index: 1;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top, rgba(8, 15, 40, 0.9) 0, rgba(4, 7, 20, 0.98) 55%, #02030a 100%);
+      backdrop-filter: blur(var(--blur-strong));
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .id-block { display: flex; flex-direction: column; gap: 2px; }
+
+    .id-label {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .id-main {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .status-pill {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.24), transparent 60%),
+                  rgba(7, 255, 185, 0.08);
+      border: 1px solid rgba(41, 255, 198, 0.35);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(41, 255, 198, 0.38);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: var(--glow-accent);
+    }
+
+    .status-pill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0, rgba(255, 255, 255, 0.4) 20%, transparent 40%);
+      mix-blend-mode: screen;
+      transform: translateX(-120%);
+      animation: sheen 5s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes sheen {
+      0% { transform: translateX(-120%); }
+      18% { transform: translateX(120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    .divider-soft {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.06),
+        transparent
+      );
+      opacity: 0.9;
+    }
+
+    .ghost-heading { display: flex; flex-direction: column; gap: 4px; }
+
+    .ghost-title {
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-main);
+    }
+
+    .ghost-subtitle {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--text-muted);
+    }
+
+    .pin-panel {
+      margin-top: 4px;
+      padding: 14px 12px 16px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(88, 101, 242, 0.18), transparent 60%),
+        linear-gradient(to bottom, rgba(8, 14, 40, 0.96), rgba(3, 5, 18, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow:
+        0 18px 55px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pin-header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .pin-label-block { display: flex; flex-direction: column; gap: 2px; }
+
+    .pin-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .pin-mode {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .pin-help-tag {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.08), transparent 60%);
+      color: var(--text-muted);
+    }
+
+    .pin-indicators { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    .pin-dots { display: flex; gap: 10px; }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.18), transparent 65%),
+                  rgba(6, 10, 30, 0.96);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pin-dot.filled::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 25%, #fff, #29ffc6);
+      box-shadow: 0 0 14px rgba(41, 255, 198, 0.7);
+    }
+
+    .pin-status-text {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: right;
+      transition: color var(--transition-fast);
+    }
+
+    .pin-status-text.error { color: var(--danger); }
+
+    .pin-input-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+
+    .pin-input-shell {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.12), transparent 65%),
+        linear-gradient(to right, rgba(5, 9, 26, 0.96), rgba(5, 10, 30, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 6px 18px rgba(0, 0, 0, 0.8);
+    }
+
+    .pin-input-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(41, 255, 198, 0.3), transparent 35%, transparent 65%, rgba(88, 101, 242, 0.35));
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
+
+    .pin-input-field {
+      position: relative;
+      width: 100%;
+      padding: 8px 40px 8px 14px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-main);
+      letter-spacing: 0.3em;
+      font-size: 14px;
+      font-weight: 500;
+      caret-color: var(--accent);
+    }
+
+    .pin-input-field::placeholder { color: rgba(139, 144, 170, 0.55); }
+
+    .pin-eye-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(circle at 30% 20%, #fff, rgba(255, 255, 255, 0.3));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 14px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .pin-eye-toggle span {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      background: radial-gradient(circle at 30% 20%, #000, #333);
+    }
+
+    .pin-cta {
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(41, 255, 198, 0.5);
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.35), transparent 60%),
+        linear-gradient(to right, rgba(7, 255, 185, 0.25), rgba(7, 162, 255, 0.15));
+      color: var(--text-main);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.85),
+        0 0 18px rgba(41, 255, 198, 0.55);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+    }
+
+    .pin-cta:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.85),
+        0 0 26px rgba(41, 255, 198, 0.7);
+    }
+
+    .pin-cta:active {
+      transform: translateY(0);
+      filter: brightness(0.98);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 12px rgba(41, 255, 198, 0.5);
+    }
+
+    .pin-cta span.icon {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #29ffc6);
+      box-shadow: 0 0 12px rgba(41, 255, 198, 0.8);
+    }
+
+    /* --- Advanced Dashboard Styling --- */
+
+    .ghost-dashboard {
+      margin-top: 14px;
+      display: none;
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+      transform-origin: top center;
+      transition:
+        opacity var(--transition-med),
+        transform var(--transition-med);
+    }
+
+    .ghost-dashboard-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 6px 4px;
+    }
+
+    .dash-title-block { display: flex; flex-direction: column; gap: 2px; }
+
+    .dash-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    .dash-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .dash-meta-chip {
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        rgba(7, 11, 28, 0.96);
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .dash-meta-chip .meta-key {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      opacity: 0.8;
+    }
+
+    .dash-meta-chip .meta-val {
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .metric-card {
+      padding: 10px 10px 9px;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.12), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(88, 101, 242, 0.16), transparent 60%),
+        rgba(6, 10, 28, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .metric-main {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .metric-value { font-size: 18px; font-weight: 600; }
+
+    .metric-unit {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .metric-bar {
+      position: relative;
+      margin-top: 4px;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .metric-bar.alt { background: rgba(88, 101, 242, 0.18); }
+
+    .metric-fill {
+      position: absolute;
+      inset: 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #29ffc6, #07a2ff);
+      box-shadow: 0 0 18px rgba(41, 255, 198, 0.7);
+      transform-origin: left center;
+      transition: width 600ms ease-out;
+    }
+
+    .metric-foot {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .channels-panel {
+      margin-top: 14px;
+      padding: 10px 10px 8px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.08), transparent 60%),
+        rgba(5, 8, 24, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .channels-header { display: flex; flex-direction: column; gap: 2px; }
+
+    .channels-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-main);
+    }
+
+    .channels-sub {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .channels-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+
+    .channel-row {
+      display: grid;
+      grid-template-columns: 0.8fr 1.3fr auto;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(4, 7, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .channel-id {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+    }
+
+    .channel-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .channel-status {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+
+    .channel-status.online {
+      color: var(--accent);
+      border-color: rgba(41, 255, 198, 0.5);
+      box-shadow: 0 0 12px rgba(41, 255, 198, 0.5);
+    }
+
+    .channel-status.adaptive { color: #ffd166; border-color: rgba(255, 209, 102, 0.5); }
+    .channel-status.standby { color: var(--text-muted); }
+
+    .control-strip {
+      margin-top: 14px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .control-pill {
+      flex: 1;
+      padding: 7px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(41, 255, 198, 0.25);
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.16), transparent 60%),
+        rgba(5, 9, 26, 0.98);
+      color: var(--text-main);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast),
+        border-color var(--transition-fast);
+    }
+
+    .control-pill.soft {
+      border-color: rgba(255, 255, 255, 0.18);
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.1), transparent 60%),
+        rgba(5, 9, 24, 0.95);
+    }
+
+    .control-pill.ghost {
+      border-color: rgba(255, 51, 102, 0.6);
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 51, 102, 0.2), transparent 60%),
+        rgba(10, 5, 16, 0.96);
+    }
+
+    .control-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.9);
+      filter: brightness(1.06);
+    }
+
+    .control-pill:active { transform: translateY(0); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8); }
+
+    .control-pill.active {
+      border-color: rgba(7, 162, 255, 0.7);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.95),
+        0 0 22px rgba(7, 162, 255, 0.7);
+    }
+
+    .pill-indicator,
+    .pill-indicator.alt,
+    .pill-indicator.danger {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(41, 255, 198, 0.6);
+      background: radial-gradient(circle at 30% 20%, #fff, #29ffc6);
+    }
+
+    .pill-indicator.alt {
+      box-shadow: 0 0 10px rgba(7, 162, 255, 0.7);
+      background: radial-gradient(circle at 30% 20%, #fff, #07a2ff);
+    }
+
+    .pill-indicator.danger {
+      box-shadow: 0 0 10px rgba(255, 51, 102, 0.7);
+      background: radial-gradient(circle at 30% 20%, #fff, #ff3366);
+    }
+
+    .activity-panel {
+      margin-top: 14px;
+      padding: 10px 10px 8px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 0 0, rgba(41, 255, 198, 0.08), transparent 55%),
+        rgba(5, 7, 20, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 190px;
+      overflow: hidden;
+    }
+
+    .activity-header { display: flex; flex-direction: column; gap: 2px; }
+
+    .activity-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-main);
+    }
+
+    .activity-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+
+    .activity-feed {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 4px;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(41, 255, 198, 0.5) transparent;
+    }
+
+    .activity-feed::-webkit-scrollbar { width: 4px; }
+    .activity-feed::-webkit-scrollbar-thumb {
+      background: linear-gradient(#29ffc6, #07a2ff);
+      border-radius: 999px;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.6fr auto;
+      gap: 6px;
+      align-items: center;
+      padding: 5px 7px;
+      border-radius: 10px;
+      background: rgba(4, 6, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 10px;
+      opacity: 0;
+      transform: translateY(4px);
+      animation: activityIn 260ms ease-out forwards;
+    }
+
+    .activity-tag {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-meta { color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .activity-time {
+      font-feature-settings: "tnum" 1, "lnum" 1;
+      color: rgba(139, 144, 170, 0.9);
+      text-align: right;
+    }
+
+    @keyframes activityIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PIN error shake */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .pin-panel.shake { animation: shake 280ms ease-out; }
+
+    /* Ghost handshake glow when recursive protocol is live */
+    .ghost-core.handshake-live::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 1px solid rgba(41, 255, 198, 0.35);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 0 36px rgba(41, 255, 198, 0.75);
+      pointer-events: none;
+      opacity: 0;
+      animation: handshakeGlow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes handshakeGlow {
+      0% { opacity: 0; }
+      25% { opacity: 0.6; }
+      60% { opacity: 0.15; }
+      100% { opacity: 0; }
+    }
+
+    @media (max-width: 420px) {
+      .ghost-core { padding: 18px 14px 14px; }
+      .metrics-row { gap: 8px; }
+      .dashboard-header { padding-inline: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ghost-shell">
+    <div class="ghost-core" id="ghost-core">
+      <div class="top-bar">
+        <div class="id-block">
+          <div class="id-label">Project Protocol</div>
+          <div class="id-main">Twenty Two // Ghost Stealth Relay</div>
+        </div>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>Ghost Mode: Armed</span>
+        </div>
+      </div>
+
+      <div class="divider-soft"></div>
+
+      <div class="ghost-heading">
+        <div class="ghost-title">Ghost Mode Access</div>
+        <div class="ghost-subtitle">Level Three . Shadow Circuit Authentication</div>
+      </div>
+
+      <div class="pin-panel">
+        <div class="pin-header-row">
+          <div class="pin-label-block">
+            <div class="pin-label">Access Gate</div>
+            <div class="pin-mode">Four Digit Shadow Pin</div>
+          </div>
+          <div class="pin-help-tag">Stealth Relay 22.G</div>
+        </div>
+
+        <div class="pin-indicators">
+          <div class="pin-dots">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+          </div>
+          <div class="pin-status-text" id="pin-status-text">Awaiting input</div>
+        </div>
+
+        <div class="pin-input-row">
+          <div class="pin-input-shell">
+            <input
+              id="ghost-pin-input"
+              class="pin-input-field"
+              type="password"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="4"
+              autocomplete="off"
+              placeholder="••••"
+            />
+            <button type="button" class="pin-eye-toggle" id="pin-eye-toggle">
+              <span></span>
+            </button>
+          </div>
+          <button type="button" class="pin-cta" id="pin-verify-btn">
+            <span class="icon"></span>
+            <span>Verify</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ghost Dashboard (hidden until PIN success) -->
+      <div class="ghost-dashboard" id="ghost-dashboard">
+        <div class="dashboard-header">
+          <div class="dash-title-block">
+            <div class="dash-label">Ghost Control Surface</div>
+            <div class="dash-title">Stealth Relay Ops Console</div>
+          </div>
+          <div class="dash-meta-chip">
+            <span class="meta-key">Node</span>
+            <span class="meta-val">22.G-Shadow</span>
+          </div>
+        </div>
+
+        <div class="divider-soft"></div>
+
+        <!-- Performance + Health Row -->
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-label">Ghost Throughput</div>
+            <div class="metric-main">
+              <span class="metric-value" id="metric-throughput">0.82</span>
+              <span class="metric-unit">relays/s</span>
+            </div>
+            <div class="metric-bar">
+              <div class="metric-fill" id="throughput-fill" style="width:72%;"></div>
+            </div>
+            <div class="metric-foot">Shadow stream stable</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Signal Obfuscation</div>
+            <div class="metric-main">
+              <span class="metric-value" id="metric-obfuscation">96.4</span>
+              <span class="metric-unit">%</span>
+            </div>
+            <div class="metric-bar alt">
+              <div class="metric-fill" id="obfuscation-fill" style="width:96%;"></div>
+            </div>
+            <div class="metric-foot">Scramble layer: triple phase</div>
+          </div>
+        </div>
+
+        <!-- Ghost Channels / Status -->
+        <div class="channels-panel">
+          <div class="channels-header">
+            <div class="channels-title">Ghost Channels</div>
+            <div class="channels-sub">Shadow links and relay vectors</div>
+          </div>
+
+          <div class="channels-list">
+            <div class="channel-row">
+              <div class="channel-id">G-Alpha</div>
+              <div class="channel-meta">Primary stealth uplink</div>
+              <div class="channel-status online">Online</div>
+            </div>
+            <div class="channel-row">
+              <div class="channel-id">G-Beta</div>
+              <div class="channel-meta">Cross-domain echo</div>
+              <div class="channel-status adaptive">Adaptive</div>
+            </div>
+            <div class="channel-row">
+              <div class="channel-id">G-Gamma</div>
+              <div class="channel-meta">Deep ghost tunnel</div>
+              <div class="channel-status standby">Standby</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Control Strip -->
+        <div class="control-strip">
+          <button type="button" class="control-pill" id="pulse-scramble-btn">
+            <span class="pill-indicator"></span>
+            <span>Pulse Scramble</span>
+          </button>
+          <button type="button" class="control-pill soft" id="cloak-toggle-btn">
+            <span class="pill-indicator alt"></span>
+            <span>Cloak Envelope</span>
+          </button>
+          <button type="button" class="control-pill ghost" id="ghost-disarm-btn">
+            <span class="pill-indicator danger"></span>
+            <span>Disarm Ghost</span>
+          </button>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-panel">
+          <div class="activity-header">
+            <div class="activity-title">Shadow Activity</div>
+            <div class="activity-sub">Latest relay handshakes</div>
+          </div>
+          <div class="activity-feed" id="activity-feed">
+            <div class="activity-row">
+              <div class="activity-tag">22.G-Handshake</div>
+              <div class="activity-meta">Ghost spine synchronized</div>
+              <div class="activity-time">T-00:12</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-tag">Ghost-Pulse</div>
+              <div class="activity-meta">Stealth carrier re-phased</div>
+              <div class="activity-time">T-00:29</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Core Ghost Mode Logic ---
+    const CORRECT_PIN = "2207"; // change this to whatever you want
+
+    const pinInput = document.getElementById("ghost-pin-input");
+    const pinDots = document.querySelectorAll(".pin-dot");
+    const pinStatusText = document.getElementById("pin-status-text");
+    const pinVerifyBtn = document.getElementById("pin-verify-btn");
+    const pinEyeToggle = document.getElementById("pin-eye-toggle");
+    const ghostDashboard = document.getElementById("ghost-dashboard");
+    const ghostCore = document.getElementById("ghost-core");
+
+    const pulseScrambleBtn = document.getElementById("pulse-scramble-btn");
+    const cloakToggleBtn = document.getElementById("cloak-toggle-btn");
+    const ghostDisarmBtn = document.getElementById("ghost-disarm-btn");
+    const activityFeed = document.getElementById("activity-feed");
+    const statusPill = document.querySelector(".status-pill span:last-child");
+
+    const throughputFill = document.getElementById("throughput-fill");
+    const obfuscationFill = document.getElementById("obfuscation-fill");
+    const metricThroughput = document.getElementById("metric-throughput");
+    const metricObfuscation = document.getElementById("metric-obfuscation");
+
+    let cloakEngaged = true;
+
+    function updateDots(value) {
+      const length = value.length;
+      pinDots.forEach((dot, index) => {
+        if (index < length) {
+          dot.classList.add("filled");
+        } else {
+          dot.classList.remove("filled");
+        }
+      });
+    }
+
+    function setStatus(message, isError = false) {
+      pinStatusText.textContent = message;
+      if (isError) {
+        pinStatusText.classList.add("error");
+      } else {
+        pinStatusText.classList.remove("error");
+      }
+    }
+
+    function shakePinPanel() {
+      const panel = document.querySelector(".pin-panel");
+      if (!panel) return;
+      panel.classList.remove("shake");
+      void panel.offsetWidth; // force reflow
+      panel.classList.add("shake");
+      setTimeout(() => panel.classList.remove("shake"), 320);
+    }
+
+    function revealDashboard() {
+      ghostDashboard.style.display = "block";
+      requestAnimationFrame(() => {
+        ghostDashboard.classList.add("ghost-dashboard-visible");
+      });
+      if (statusPill) {
+        statusPill.textContent = "Ghost Mode: Live";
+      }
+      startGhostHandshakeLoop();
+    }
+
+    function concealDashboard() {
+      ghostDashboard.classList.remove("ghost-dashboard-visible");
+      setTimeout(() => {
+        ghostDashboard.style.display = "none";
+      }, 220);
+      if (statusPill) {
+        statusPill.textContent = "Ghost Mode: Armed";
+      }
+      stopGhostHandshakeLoop();
+    }
+
+    function handlePinCheck() {
+      const value = pinInput.value.trim();
+
+      if (value.length < 4) {
+        setStatus("Need full shadow pin", true);
+        shakePinPanel();
+        return;
+      }
+
+      if (value === CORRECT_PIN) {
+        setStatus("Access granted. Opening ghost surface", false);
+        pinInput.blur();
+        setTimeout(() => {
+          revealDashboard();
+        }, 260);
+      } else {
+        setStatus("Invalid shadow pattern", true);
+        shakePinPanel();
+        pinInput.value = "";
+        updateDots("");
+      }
+    }
+
+    pinInput.addEventListener("input", (e) => {
+      const numeric = e.target.value.replace(/\D/g, "").slice(0, 4);
+      if (numeric !== e.target.value) {
+        e.target.value = numeric;
+      }
+      updateDots(numeric);
+      setStatus("Awaiting input", false);
+    });
+
+    pinInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handlePinCheck();
+      }
+    });
+
+    pinVerifyBtn.addEventListener("click", handlePinCheck);
+
+    pinEyeToggle.addEventListener("click", () => {
+      const isPassword = pinInput.type === "password";
+      pinInput.type = isPassword ? "text" : "password";
+    });
+
+    function pushActivity(tag, meta, time = "T-00:00") {
+      const row = document.createElement("div");
+      row.className = "activity-row";
+
+      const tagEl = document.createElement("div");
+      tagEl.className = "activity-tag";
+      tagEl.textContent = tag;
+
+      const metaEl = document.createElement("div");
+      metaEl.className = "activity-meta";
+      metaEl.textContent = meta;
+
+      const timeEl = document.createElement("div");
+      timeEl.className = "activity-time";
+      timeEl.textContent = time;
+
+      row.appendChild(tagEl);
+      row.appendChild(metaEl);
+      row.appendChild(timeEl);
+
+      activityFeed.appendChild(row);
+      activityFeed.scrollTop = activityFeed.scrollHeight;
+    }
+
+    pulseScrambleBtn.addEventListener("click", () => {
+      pushActivity("Ghost-Pulse", "Scramble sequence fired");
+      nudgeMetrics();
+    });
+
+    cloakToggleBtn.addEventListener("click", () => {
+      cloakEngaged = !cloakEngaged;
+      cloakToggleBtn.classList.toggle("active", cloakEngaged);
+      pushActivity(
+        "Cloak-Envelope",
+        cloakEngaged ? "Cloak envelope engaged" : "Cloak envelope relaxed"
+      );
+    });
+
+    ghostDisarmBtn.addEventListener("click", () => {
+      pushActivity("Ghost-Disarm", "Ghost mode returned to armed idle");
+      concealDashboard();
+      pinInput.value = "";
+      updateDots("");
+      setStatus("Awaiting input", false);
+    });
+
+    // --- Subtle metric drift when activity fires ---
+    function clamp(val, min, max) {
+      return Math.min(max, Math.max(min, val));
+    }
+
+    function nudgeMetrics() {
+      const tVal = parseFloat(metricThroughput.textContent) || 0.82;
+      const oVal = parseFloat(metricObfuscation.textContent) || 96.4;
+
+      const tDelta = (Math.random() * 0.08 - 0.03).toFixed(2);
+      const oDelta = (Math.random() * 1.4 - 0.6).toFixed(1);
+
+      const newT = clamp(tVal + parseFloat(tDelta), 0.4, 1.4);
+      const newO = clamp(oVal + parseFloat(oDelta), 88, 99.9);
+
+      metricThroughput.textContent = newT.toFixed(2);
+      metricObfuscation.textContent = newO.toFixed(1);
+
+      const tPct = clamp((newT / 1.4) * 100, 8, 100);
+      const oPct = clamp(newO, 20, 100);
+
+      throughputFill.style.width = `${tPct}%`;
+      obfuscationFill.style.width = `${oPct}%`;
+    }
+
+    // --- Recursive Handshake Protocol ---
+
+    let handshakeTimer = null;
+    let handshakeDepth = 0;
+    const MAX_HANDSHAKE_DEPTH = 7; // purely cosmetic recursion cap
+
+    function ghostHandshake(depth = 0) {
+      if (!ghostDashboard || ghostDashboard.style.display === "none") return;
+
+      const tag = `22.G-Handshake/${depth}`;
+      const meta = depth === 0
+        ? "Root shadow handshake synchronized"
+        : depth < MAX_HANDSHAKE_DEPTH - 1
+          ? `Recursive echo depth ${depth} stabilized`
+          : `Recursive echo depth ${depth} dissipating`;
+
+      const timeStamp = `T-${String(depth).padStart(2, "0")}:${String(
+        Math.floor(Math.random() * 59)
+      ).padStart(2, "0")}`;
+
+      pushActivity(tag, meta, timeStamp);
+      nudgeMetrics();
+
+      if (depth + 1 < MAX_HANDSHAKE_DEPTH) {
+        const nextDelay = 400 + Math.random() * 700;
+        setTimeout(() => ghostHandshake(depth + 1), nextDelay);
+      }
+    }
+
+    function scheduleNextHandshakeWindow() {
+      if (!ghostDashboard || ghostDashboard.style.display === "none") return;
+
+      const baseDelay = 3500 + Math.random() * 4500; // 3.5–8s between trees
+      handshakeTimer = setTimeout(() => {
+        handshakeDepth++;
+        ghostHandshake(0);
+        scheduleNextHandshakeWindow();
+      }, baseDelay);
+    }
+
+    function startGhostHandshakeLoop() {
+      if (handshakeTimer) return;
+      ghostCore.classList.add("handshake-live");
+      handshakeDepth = 0;
+      ghostHandshake(0);
+      scheduleNextHandshakeWindow();
+    }
+
+    function stopGhostHandshakeLoop() {
+      if (handshakeTimer) {
+        clearTimeout(handshakeTimer);
+        handshakeTimer = null;
+      }
+      ghostCore.classList.remove("handshake-live");
+    }
+
+    // Optionally auto-focus the PIN on load
+    window.addEventListener("load", () => {
+      try { pinInput.focus(); } catch (e) {}
     });
   </script>
 </body>
